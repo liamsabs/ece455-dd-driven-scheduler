@@ -146,6 +146,7 @@ functionality.
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
+#include "dd_task_list.h"
 
 
 /*-----------------------------------------------------------*/
@@ -168,6 +169,8 @@ functionality.
  */
 static void prvSetupHardware( void );
 
+static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
+
 /*
  * The queue send and receive tasks as described in the comments at the top of
  * this file.
@@ -184,6 +187,9 @@ static void DD_Task_Generator_Task( void *pvParameters );
 static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
+
+// Timer Handler
+xTimerHandle xTaskGenTimerHandler = 0;
 
 
 /*-----------------------------------------------------------*/
@@ -210,11 +216,26 @@ int main(void)
 	/* Add to the registry, for the benefit of kernel aware debugging. */
 	vQueueAddToRegistry( xQueue_handle, "MainQueue" );
 
+	/*
+	The below tasks are for the LEDs, which we may be using for testing.
+	*/
 	xTaskCreate( Manager_Task, "Manager", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
 	xTaskCreate( Blue_LED_Controller_Task, "Blue_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate( Red_LED_Controller_Task, "Red_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate( Green_LED_Controller_Task, "Green_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate( Amber_LED_Controller_Task, "Amber_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+	/*
+	Beginning of our tasks and timers
+	*/
+
+	TimerHandle_t Task_Generator_Timer = 
+				xTimerCreate("TaskGenTimer", 
+				pdMS_TO_TICKS(1000), 
+				pdFALSE, 
+				(void *) 0, 
+				vTaskGenTimerCallback);
+
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -225,7 +246,7 @@ int main(void)
 /*-----------------------------------------------------------*/
 
 static void DDS_Task( void *pvParameters ){
-
+	
 }
 
 /*-----------------------------------------------------------*/
@@ -243,6 +264,12 @@ static void DD_Task_Generator_Task( void *pvParameters ){
 /*-----------------------------------------------------------*/
 
 static void Monitor_Task( void *pvParameters ){
+
+}
+
+/*-----------------------------------------------------------*/
+
+static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
 
 }
 
