@@ -268,7 +268,9 @@ static void Monitor_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-
+static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
+	
+}
 
 /*-----------------------------------------------------------*/
 
