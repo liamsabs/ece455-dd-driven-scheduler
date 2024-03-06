@@ -178,6 +178,9 @@ static void Green_LED_Controller_Task( void *pvParameters );
 static void Red_LED_Controller_Task( void *pvParameters );
 static void Amber_LED_Controller_Task( void *pvParameters );
 
+static void DDS_Task( void *pvParameters );
+static void User_Defined_Task( void *pvParameters );
+
 xQueueHandle xQueue_handle = 0;
 
 
@@ -217,6 +220,17 @@ int main(void)
 	return 0;
 }
 
+/*-----------------------------------------------------------*/
+
+static void DDS_Task( void *pvParameters ){
+
+}
+
+/*-----------------------------------------------------------*/
+
+static void User_Defined_Task( void *pvParameters ){
+
+}
 
 /*-----------------------------------------------------------*/
 
