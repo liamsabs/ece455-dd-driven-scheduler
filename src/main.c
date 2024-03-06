@@ -180,6 +180,8 @@ static void Amber_LED_Controller_Task( void *pvParameters );
 
 static void DDS_Task( void *pvParameters );
 static void User_Defined_Task( void *pvParameters );
+static void DD_Task_Generator_Task( void *pvParameters );
+static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
 
@@ -229,6 +231,18 @@ static void DDS_Task( void *pvParameters ){
 /*-----------------------------------------------------------*/
 
 static void User_Defined_Task( void *pvParameters ){
+
+}
+
+/*-----------------------------------------------------------*/
+
+static void DD_Task_Generator_Task( void *pvParameters ){
+
+}
+
+/*-----------------------------------------------------------*/
+
+static void Monitor_Task( void *pvParameters ){
 
 }
 
