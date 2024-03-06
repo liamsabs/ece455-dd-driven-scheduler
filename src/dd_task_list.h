@@ -38,6 +38,9 @@ void insertAtBeginning(struct dd_task_list** head, struct dd_task newTask);
 // Function to insert a new node at the end of the linked list
 void insertAtEnd(struct dd_task_list** head, struct dd_task newTask);
 
+// Count number of nodes in list
+unsigned int countItems(struct dd_task_list* head);
+
 // Function to print the elements of the linked list
 void printList(struct dd_task_list* head);
 
