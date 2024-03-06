@@ -10,18 +10,7 @@
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
-// enum for state
-enum task_type {PERIODIC,APERIODIC};
-
-// deadline-driven schedule handler struct
-struct dd_task {
-    TaskHandle_t t_handle;
-    task_type type;
-    uint32_t task_id;
-    uint32_t release_time;
-    uint32_t absolute_deadline;
-    uint32_t completion_time;
-};
+#include "dd_tasks.h"
 
 // Define the structure for a node in the linked list
 struct dd_task_list {

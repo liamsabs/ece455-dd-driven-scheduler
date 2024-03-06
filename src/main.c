@@ -146,6 +146,7 @@ functionality.
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
+#include "dd_task_list.h"
 
 
 /*-----------------------------------------------------------*/
@@ -269,7 +270,7 @@ static void Monitor_Task( void *pvParameters ){
 /*-----------------------------------------------------------*/
 
 static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
-	
+
 }
 
 /*-----------------------------------------------------------*/
