@@ -32,6 +32,16 @@ void insertAtEnd(struct dd_task_list** head, struct dd_task newTask) {
     temp->next_task = newNode;
 }
 
+// Implementation of the countItems function
+unsigned int countItems(struct dd_task_list* head) {
+    unsigned int count = 0;
+    struct dd_task_list* current = head;
+
+    while (current != NULL) {
+        count++;
+        current = current->next_task;
+    }
+
 // Function to print the elements of the linked list
 void printList(struct dd_task_list* head) {
     struct dd_task_list* temp = head;
