@@ -9,7 +9,6 @@
 #include "../FreeRTOS_Source/include/semphr.h"
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
-
 #include "dd_task_list.h"
 
 // enum for state
@@ -34,10 +33,12 @@ uint32_t absolute_deadline
 
 void delete_dd_task(uint32_t task_id);
 
-**dd_task_list get_active_dd_task_list(void);
+dd_task_list** get_active_dd_task_list(void);
 
-**dd_task_list get_complete_dd_task_list(void);
+dd_task_list** get_complete_dd_task_list(void);
 
-**dd_task_list get_overdue_dd_task_list(void);
+dd_task_list** get_overdue_dd_task_list(void);
+
+#endif
 
 #endif

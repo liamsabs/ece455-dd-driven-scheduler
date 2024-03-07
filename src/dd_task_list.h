@@ -9,30 +9,30 @@
 #include "../FreeRTOS_Source/include/semphr.h"
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
-
+#include "dd_tasks.h"
 
 // Define the structure for a node in the linked list
 typedef struct {
     dd_task task;
     dd_task_list* next_task;
-} dd_task_list;
+}dd_task_list;
 
 // Function to create a new node with given task
-struct dd_task_list* createNode(struct dd_task newTask);
+dd_task_list* createNode(dd_task newTask);
 
 // Function to insert a new node at the beginning of the linked list
-void insertAtBeginning(struct dd_task_list** head, struct dd_task newTask);
+void insertAtBeginning(dd_task_list** head, dd_task newTask);
 
 // Function to insert a new node at the end of the linked list
-void insertAtEnd(struct dd_task_list** head, struct dd_task newTask);
+void insertAtEnd(dd_task_list** head, dd_task newTask);
 
 // Count number of nodes in list
-unsigned int countItems(struct dd_task_list* head);
+unsigned int countItems(dd_task_list* head);
 
 // Function to print the elements of the linked list
-void printList(struct dd_task_list* head);
+void printList(dd_task_list* head);
 
 // Function to free the memory allocated for the linked list
-void freeList(struct dd_task_list** head);
+void freeList(dd_task_list** head);
 
 #endif
