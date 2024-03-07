@@ -147,6 +147,7 @@ functionality.
 #include "../FreeRTOS_Source/include/timers.h"
 
 #include "dd_task_list.h"
+#include "dd_tasks.h"
 
 
 /*-----------------------------------------------------------*/
@@ -258,7 +259,8 @@ static void User_Defined_Task( void *pvParameters ){
 /*-----------------------------------------------------------*/
 
 static void DD_Task_Generator_Task( void *pvParameters ){
-
+	uint32_t new_task_ID = 0;
+	create_dd_task(TaskHandle_t t_handle, PERIODIC, new_task_ID, 1000);
 }
 
 /*-----------------------------------------------------------*/
