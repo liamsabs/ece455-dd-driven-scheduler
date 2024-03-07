@@ -170,7 +170,7 @@ functionality.
  */
 static void prvSetupHardware( void );
 
-static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
+static void vTaskTimerCallback ( xTimerHandle timerHandler );
 
 /*
  * The queue send and receive tasks as described in the comments at the top of
@@ -184,7 +184,7 @@ static void Amber_LED_Controller_Task( void *pvParameters );
 
 static void DDS_Task( void *pvParameters );
 static void User_Defined_Task( void *pvParameters );
-static void DD_Task_Generator_Task( void *pvParameters, xTimerHandle timerHandler );
+static void DD_Task_Generator_Task( void *pvParameters );
 static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
@@ -214,12 +214,12 @@ int main(void)
 
 
 	prvSetupHardware();
-		TimerHandle_t Task_Generator_Timer = 
-				xTimerCreate("TaskGenTimer", 
+		TimerHandle_t Task_Timer = 
+				xTimerCreate("TaskTimer", 
 				pdMS_TO_TICKS(1000), 
 				pdFALSE, 
 				(void *) 0, 
-				vTaskGenTimerCallback);
+				vTaskTimerCallback);
 	
 	// Need to somehow add the timer to the queue, or allow Task Generator to see it somehow?
 
@@ -250,7 +250,7 @@ int main(void)
 	*/
 
 
-	xTimerStart(Task_Generator_Timer, 100);
+	xTimerStart(Task_Timer, 100);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -272,10 +272,9 @@ static void User_Defined_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-static void DD_Task_Generator_Task( void *pvParameters, xTimerHandle timerHandler ){
+static void DD_Task_Generator_Task( void *pvParameters ){
 	uint32_t new_task_ID = 0;
 	create_dd_task(TaskHandle_t t_handle, PERIODIC, new_task_ID, 1000);
-	xTimerReset(Task_Generator_Timer, 100);
 }
 
 /*-----------------------------------------------------------*/
@@ -286,7 +285,7 @@ static void Monitor_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
+static void vTaskTimerCallback ( xTimerHandle timerHandler ){
 	/*
 	When timer done, system should call Task Generator to create a new periodic task
 	*/
