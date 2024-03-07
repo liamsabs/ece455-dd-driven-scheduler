@@ -184,7 +184,7 @@ static void Amber_LED_Controller_Task( void *pvParameters );
 
 static void DDS_Task( void *pvParameters );
 static void User_Defined_Task( void *pvParameters );
-static void DD_Task_Generator_Task( void *pvParameters );
+static void DD_Task_Generator_Task( void *pvParameters, xTimerHandle timerHandler );
 static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
@@ -193,8 +193,6 @@ xQueueHandle xQueue_handle = 0;
 xQueueHandle xTaskCreationQueue = 0;
 //Queue used to keep track of the 3 task lists
 xQueueHandle xTaskListQueue = 0;
-//Queue to pass timers between tasks
-xQueueHandle xTimerQueue = 0;
 
 // Timer Handler
 xTimerHandle xTaskGenTimerHandler = 0;
@@ -237,7 +235,6 @@ int main(void)
 	/* Setup Queues */
 	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
 	xTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list));
-	xTimerQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(Task_Generator_Timer));
 
 	/*
 	The below tasks are for the LEDs, which we may be using for testing.
@@ -275,7 +272,7 @@ static void User_Defined_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-static void DD_Task_Generator_Task( void *pvParameters ){
+static void DD_Task_Generator_Task( void *pvParameters, xTimerHandle timerHandler ){
 	uint32_t new_task_ID = 0;
 	create_dd_task(TaskHandle_t t_handle, PERIODIC, new_task_ID, 1000);
 	xTimerReset(Task_Generator_Timer, 100);

@@ -40,5 +40,3 @@ dd_task_list** get_complete_dd_task_list(void);
 dd_task_list** get_overdue_dd_task_list(void);
 
 #endif
-
-#endif

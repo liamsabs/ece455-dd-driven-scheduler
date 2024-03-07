@@ -12,9 +12,9 @@
 #include "dd_tasks.h"
 
 // Define the structure for a node in the linked list
-typedef struct {
+typedef struct dd_task_list{
     dd_task task;
-    dd_task_list* next_task;
+    struct dd_task_list* next_task;
 }dd_task_list;
 
 // Function to create a new node with given task
