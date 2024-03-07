@@ -217,6 +217,9 @@ int main(void)
 	/* Add to the registry, for the benefit of kernel aware debugging. */
 	vQueueAddToRegistry( xQueue_handle, "MainQueue" );
 
+	xQueueHandle xTaskGeneratorQueue = 0;
+	xQueueHandle xDDSQueue = 0;
+
 	/*
 	The below tasks are for the LEDs, which we may be using for testing.
 	*/
@@ -236,6 +239,8 @@ int main(void)
 				pdFALSE, 
 				(void *) 0, 
 				vTaskGenTimerCallback);
+	
+	// Need to somehow add the timer to the queue, or allow Task Generator to see it somehow?
 
 	xTimerStart(Task_Generator_Timer, 100);
 
