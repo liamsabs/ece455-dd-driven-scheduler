@@ -10,13 +10,12 @@
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
-#include "dd_tasks.h"
 
 // Define the structure for a node in the linked list
-struct dd_task_list {
-    struct dd_task task;
-    struct dd_task_list* next_task;
-};
+typedef struct {
+    dd_task task;
+    dd_task_list* next_task;
+} dd_task_list;
 
 // Function to create a new node with given task
 struct dd_task_list* createNode(struct dd_task newTask);

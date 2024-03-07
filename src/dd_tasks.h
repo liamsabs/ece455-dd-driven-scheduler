@@ -16,14 +16,14 @@
 typedef enum {PERIODIC,APERIODIC} task_type;
 
 // deadline-driven schedule handler struct
-struct dd_task {
+typedef struct {
     TaskHandle_t t_handle;
     task_type type;
     uint32_t task_id;
     uint32_t release_time;
     uint32_t absolute_deadline;
     uint32_t completion_time;
-};
+} dd_task;
 
 
 void create_dd_task( TaskHandle_t t_handle,

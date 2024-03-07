@@ -5,7 +5,7 @@ void create_dd_task( TaskHandle_t t_handle,
                     uint32_t task_id,
                     uint32_t absolute_deadline
 ){
-    dd_task* new_task = (dd_task*)pvPortMalloc(sizeof(dd_task));
+    dd_task* new_task = pvPortMalloc(sizeof(dd_task));
     new_task->t_handle = t_handle;
     new_task->type = type;
     new_task->task_id = task_id;

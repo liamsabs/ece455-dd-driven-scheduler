@@ -189,6 +189,13 @@ static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
 
+//Queue to pass created user defined tasks between the DDS and other Tasks
+xQueueHandle xTaskCreationQueue = 0;
+//Queue used to keep track of the 3 task lists
+xQueueHandle xTaskListQueue = 0;
+//Queue to pass timers between tasks
+xQueueHandle xTimerQueue = 0;
+
 // Timer Handler
 xTimerHandle xTaskGenTimerHandler = 0;
 
@@ -206,7 +213,17 @@ int main(void)
 
 	/* Configure the system ready to run the demo.  The clock configuration
 	can be done here if it was not done before main() was called. */
+
+
 	prvSetupHardware();
+		TimerHandle_t Task_Generator_Timer = 
+				xTimerCreate("TaskGenTimer", 
+				pdMS_TO_TICKS(1000), 
+				pdFALSE, 
+				(void *) 0, 
+				vTaskGenTimerCallback);
+	
+	// Need to somehow add the timer to the queue, or allow Task Generator to see it somehow?
 
 
 	/* Create the queue used by the queue send and queue receive tasks.
@@ -217,12 +234,10 @@ int main(void)
 	/* Add to the registry, for the benefit of kernel aware debugging. */
 	vQueueAddToRegistry( xQueue_handle, "MainQueue" );
 
-	//Queue to pass created user defined tasks between the DDS and other Tasks
-	xQueueHandle xTaskCreationQueue = 0;
-	//Queue used to keep track of the 3 task lists
-	xQueueHandle xTaskListQueue = 0;
-	//Queue to pass timers between tasks
-	xQueueHandle xTimerQueue = 0;
+	/* Setup Queues */
+	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
+	xTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list));
+	xTimerQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(Task_Generator_Timer));
 
 	/*
 	The below tasks are for the LEDs, which we may be using for testing.
@@ -237,14 +252,6 @@ int main(void)
 	Beginning of our tasks and timers
 	*/
 
-	TimerHandle_t Task_Generator_Timer = 
-				xTimerCreate("TaskGenTimer", 
-				pdMS_TO_TICKS(1000), 
-				pdFALSE, 
-				(void *) 0, 
-				vTaskGenTimerCallback);
-	
-	// Need to somehow add the timer to the queue, or allow Task Generator to see it somehow?
 
 	xTimerStart(Task_Generator_Timer, 100);
 
