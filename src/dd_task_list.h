@@ -36,4 +36,4 @@ void printList(struct dd_task_list* head);
 // Function to free the memory allocated for the linked list
 void freeList(struct dd_task_list** head);
 
-#endif DD_TASK_LIST_H
+#endif

@@ -237,6 +237,7 @@ int main(void)
 				(void *) 0, 
 				vTaskGenTimerCallback);
 
+	xTimerStart(Task_Generator_Timer, 100);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -261,6 +262,7 @@ static void User_Defined_Task( void *pvParameters ){
 static void DD_Task_Generator_Task( void *pvParameters ){
 	uint32_t new_task_ID = 0;
 	create_dd_task(TaskHandle_t t_handle, PERIODIC, new_task_ID, 1000);
+	xTimerReset(Task_Generator_Timer, 100);
 }
 
 /*-----------------------------------------------------------*/
@@ -272,7 +274,9 @@ static void Monitor_Task( void *pvParameters ){
 /*-----------------------------------------------------------*/
 
 static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
-
+	/*
+	When timer done, system should call Task Generator to create a new periodic task
+	*/
 }
 
 /*-----------------------------------------------------------*/
