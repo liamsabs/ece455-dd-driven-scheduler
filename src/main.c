@@ -217,8 +217,12 @@ int main(void)
 	/* Add to the registry, for the benefit of kernel aware debugging. */
 	vQueueAddToRegistry( xQueue_handle, "MainQueue" );
 
-	xQueueHandle xTaskGeneratorQueue = 0;
-	xQueueHandle xDDSQueue = 0;
+	//Queue to pass created user defined tasks between the DDS and other Tasks
+	xQueueHandle xTaskCreationQueue = 0;
+	//Queue used to keep track of the 3 task lists
+	xQueueHandle xTaskListQueue = 0;
+	//Queue to pass timers between tasks
+	xQueueHandle xTimerQueue = 0;
 
 	/*
 	The below tasks are for the LEDs, which we may be using for testing.
