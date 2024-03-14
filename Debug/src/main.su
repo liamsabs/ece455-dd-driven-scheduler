@@ -1,0 +1,16 @@
+core_cm4.h:1037:22:NVIC_SetPriorityGrouping	24	static
+main.c:196:5:main	24	static
+main.c:247:13:DDS_Task	16	static
+main.c:253:13:User_Defined_Task	16	static
+main.c:259:13:DD_Task_Generator_Task	24	static
+main.c:266:13:Monitor_Task	16	static
+main.c:272:13:vTaskGenTimerCallback	16	static
+main.c:278:13:Manager_Task	24	static
+main.c:311:13:Blue_LED_Controller_Task	24	static
+main.c:339:13:Green_LED_Controller_Task	24	static
+main.c:366:13:Red_LED_Controller_Task	24	static
+main.c:394:13:Amber_LED_Controller_Task	24	static
+main.c:422:6:vApplicationMallocFailedHook	4	static
+main.c:436:6:vApplicationStackOverflowHook	16	static
+main.c:450:6:vApplicationIdleHook	16	static
+main.c:472:13:prvSetupHardware	8	static

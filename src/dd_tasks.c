@@ -11,7 +11,7 @@ void create_dd_task( TaskHandle_t t_handle,
     new_task->task_id = task_id;
     new_task->absolute_deadline = absolute_deadline;
   // Then call or send to DDS when done? Needs to "interface" with it
-    
+
 }
 
 void delete_dd_task(uint32_t task_id){

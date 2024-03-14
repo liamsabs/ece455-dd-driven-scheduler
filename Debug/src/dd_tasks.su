@@ -1,0 +1,5 @@
+dd_tasks.c:3:6:create_dd_task	32	static
+dd_tasks.c:17:6:delete_dd_task	16	static
+dd_tasks.c:21:16:get_active_dd_task_list	4	static
+dd_tasks.c:25:16:get_complete_dd_task_list	4	static
+dd_tasks.c:29:16:get_overdue_dd_task_list	4	static
