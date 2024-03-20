@@ -11,8 +11,7 @@ void create_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
   // Then call or send to DDS when done? Needs to "interface" with it
 }
 
-void complete_dd_task(uint32_t task_id, QueueHandle_t xTaskCreationQueue) {
-    xQueueSend(xTaskCreationQueue, &task_id, 100);
+void complete_dd_task(uint32_t task_id) {
 }
 
 dd_task_list** get_active_dd_task_list(void){

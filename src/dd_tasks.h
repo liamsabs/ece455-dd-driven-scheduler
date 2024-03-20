@@ -35,7 +35,7 @@ uint32_t absolute_deadline,
 xQueueHandle xTaskCreationQueue
 );
 
-void complete_dd_task(uint32_t task_id, xQueueHandle xTaskCreationQueue);
+void complete_dd_task(uint32_t task_id);
 
 dd_task_list** get_active_dd_task_list(void);
 
