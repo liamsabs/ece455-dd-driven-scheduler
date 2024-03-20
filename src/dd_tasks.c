@@ -1,6 +1,6 @@
 #include "dd_tasks.h"
 
-void create_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
+void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
                     uint32_t absolute_deadline,
                     QueueHandle_t xTaskCreationQueue) {
   dd_task *new_task = pvPortMalloc(sizeof(dd_task));
@@ -11,8 +11,7 @@ void create_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
   // Then call or send to DDS when done? Needs to "interface" with it
 }
 
-void complete_dd_task(uint32_t task_id, QueueHandle_t xTaskCreationQueue) {
-    xQueueSend(xTaskCreationQueue, task_id, 100);
+void complete_dd_task(uint32_t task_id) {
 }
 
 dd_task_list** get_active_dd_task_list(void){
