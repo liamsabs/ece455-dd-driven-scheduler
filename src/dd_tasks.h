@@ -31,10 +31,11 @@ typedef struct {
 void create_dd_task( TaskHandle_t t_handle,
 task_type type,
 uint32_t task_id,
-uint32_t absolute_deadline
+uint32_t absolute_deadline,
+xQueueHandle xTaskCreationQueue
 );
 
-void delete_dd_task(uint32_t task_id);
+void complete_dd_task(uint32_t task_id, xQueueHandle xTaskCreationQueue);
 
 dd_task_list** get_active_dd_task_list(void);
 
