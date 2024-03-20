@@ -168,7 +168,7 @@ functionality.
  */
 static void prvSetupHardware( void );
 
-static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
+static void vTaskTimerCallback ( xTimerHandle timerHandler );
 
 /*
  * The queue send and receive tasks as described in the comments at the top of
@@ -187,6 +187,11 @@ static void Monitor_Task( void *pvParameters );
 
 xQueueHandle xQueue_handle = 0;
 
+//Queue to pass created user defined tasks between the DDS and other Tasks
+xQueueHandle xTaskCreationQueue = 0;
+//Queue used to keep track of the 3 task lists
+xQueueHandle xTaskListQueue = 0;
+
 // Timer Handler
 xTimerHandle xTaskGenTimerHandler = 0;
 
@@ -204,7 +209,17 @@ int main(void)
 
 	/* Configure the system ready to run the demo.  The clock configuration
 	can be done here if it was not done before main() was called. */
+
+
 	prvSetupHardware();
+		TimerHandle_t Task_Timer = 
+				xTimerCreate("TaskTimer", 
+				pdMS_TO_TICKS(1000), 
+				pdFALSE, 
+				(void *) 0, 
+				vTaskTimerCallback);
+	
+	// Need to somehow add the timer to the queue, or allow Task Generator to see it somehow?
 
 
 	/* Create the queue used by the queue send and queue receive tasks.
@@ -214,6 +229,10 @@ int main(void)
 
 	/* Add to the registry, for the benefit of kernel aware debugging. */
 	vQueueAddToRegistry( xQueue_handle, "MainQueue" );
+
+	/* Setup Queues */
+	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
+	xTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list));
 
 	/*
 	The below tasks are for the LEDs, which we may be using for testing.
@@ -269,8 +288,10 @@ static void Monitor_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
-
+static void vTaskTimerCallback ( xTimerHandle timerHandler ){
+	/*
+	When timer done, system should call Task Generator to create a new periodic task
+	*/
 }
 
 /*-----------------------------------------------------------*/
