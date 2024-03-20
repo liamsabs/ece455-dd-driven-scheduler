@@ -32,6 +32,23 @@ void insertAtEnd(dd_task_list** head, dd_task newTask) {
     temp->next_task = newNode;
 }
 
+
+// Really not sure how to make this work, pointers are iffy for me
+void deleteTask(dd_task_list** head, dd_task Task){
+    if (*head == NULL) {
+        return;
+    }
+    
+    if ((*head)->task.task_id == Task.task_id){
+        dd_task_list* del_node = *head;
+        *head = (*head)->next_task;
+        freeList(&(del_node));
+        return;
+    }
+
+    deleteTask(&(*head)->next_task, Task);
+}
+
 // Implementation of the countItems function
 unsigned int countItems(dd_task_list* head) {
     unsigned int count = 0;
