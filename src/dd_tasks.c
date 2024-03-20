@@ -12,7 +12,7 @@ void create_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
 }
 
 void complete_dd_task(uint32_t task_id, QueueHandle_t xTaskCreationQueue) {
-    xQueueSend(xTaskCreationQueue, task_id, 100);
+    xQueueSend(xTaskCreationQueue, &task_id, 100);
 }
 
 dd_task_list** get_active_dd_task_list(void){
