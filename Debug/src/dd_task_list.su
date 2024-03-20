@@ -1,0 +1,6 @@
+dd_task_list.c:4:15:createNode	24	static
+dd_task_list.c:15:6:insertAtBeginning	32	static
+dd_task_list.c:22:6:insertAtEnd	32	static
+dd_task_list.c:36:14:countItems	24	static
+dd_task_list.c:49:6:printList	24	static
+dd_task_list.c:60:6:freeList	24	static
