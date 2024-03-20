@@ -1,6 +1,6 @@
 #include "dd_tasks.h"
 
-void create_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
+void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id,
                     uint32_t absolute_deadline,
                     QueueHandle_t xTaskCreationQueue) {
   dd_task *new_task = pvPortMalloc(sizeof(dd_task));
