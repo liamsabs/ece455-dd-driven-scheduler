@@ -54,8 +54,14 @@ void insertAtBeginning(dd_task_list** head, dd_task newTask);
 // Function to insert a new node at the end of the linked list
 void insertAtEnd(dd_task_list** head, dd_task newTask);
 
-//
+// Function to delete members of a task list
 void deleteTask(dd_task_list** head, dd_task Task);
+
+// Function to swap two list nodes, for use in the sorting algorithm
+dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2);
+
+// Function to sort list members by deadline, using a bubble sort algorithm
+void sortList(dd_task_list** head);
 
 // Count number of nodes in list
 unsigned int countItems(dd_task_list* head);
