@@ -49,6 +49,7 @@ void deleteTask(dd_task_list** head, dd_task Task){
     deleteTask(&(*head)->next_task, Task);
 }
 
+// Function to swap two list nodes, for use in the sorting algorithm
 dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2){
     dd_task_list* temp_list = ptr2->next_task;
     ptr2->next_task = ptr1;
@@ -56,6 +57,7 @@ dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2){
     return ptr2;
 }
 
+// Function to sort list members by deadline, using a bubble sort algorithm
 void sortList(dd_task_list** head){
     dd_task_list** other_head;
 
