@@ -279,26 +279,30 @@ static void DDS_Task( void *pvParameters ){
 //Niaomi to-do: queue recieving and requests from task list
 //Will add this asap
 
-	uint16_t list_type;
+	// Not sure if everything should be in a while(1) loop?
+	while(1){
+		uint16_t list_type;
 
-	//These lists will probably be different in the final implementation, is a placeholder for now
-	dd_task_list* active_list;
-	dd_task_list* completed_list;
-	dd_task_list* overdue_list;
+		//These lists will probably be different in the final implementation, is a placeholder for now
+		dd_task_list* active_list;
+		dd_task_list* completed_list;
+		dd_task_list* overdue_list;
 
-	/*
-	This checks if the get_xxx_task_list has sent a request, and what type of list they want
-	Then, it updates the appropriate queue and sends the requested list along.
-	*/
-	if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
-		if(list_type == active){
-			xQueueSend(xActiveTaskListQueue, &active_list, 100);
-		}else if(list_type == completed){
-			xQueueSend(xCompletedTaskListQueue, &completed_list, 100);
-		}else if(list_type == overdue){
-			xQueueSend(xOverdueTaskListQueue, &overdue_list, 100);
+		/*
+		This checks if the get_xxx_task_list has sent a request, and what type of list they want
+		Then, it updates the appropriate queue and sends the requested list along.
+		*/
+		if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
+			if(list_type == active){
+				xQueueSend(xActiveTaskListQueue, &active_list, 100);
+			}else if(list_type == completed){
+				xQueueSend(xCompletedTaskListQueue, &completed_list, 100);
+			}else if(list_type == overdue){
+				xQueueSend(xOverdueTaskListQueue, &overdue_list, 100);
+			}
 		}
 	}
+	
 
 }
 
