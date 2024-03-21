@@ -5,7 +5,9 @@ void periodicTaskGenerator1 (void *pvParameters)
 {
 	while(1)
 	{
-		vTaskDelay(TASK_1_PERIOD);
+		xTaskHandle pTask1Handle_t;
+		create_dd_task(PERIODIC, pTask1Handle_t);
+		vTaskDelay(pdMS_TO_TICKS(TASK_1_PERIOD));
 	}
 }
 
@@ -13,7 +15,8 @@ void periodicTaskGenerator2 (void *pvParameters)
 {
 	while(1)
 	{
-		vTaskDelay(TASK_2_PERIOD);
+
+		vTaskDelay(pdMS_TO_TICKS(TASK_2_PERIOD));
 	}
 }
 
@@ -22,7 +25,7 @@ void periodicTaskGenerator3 (void *pvParamters)
 {
 	while(1)
 	{
-		vTaskDelay(TASK_3_PERIOD);
+		vTaskDelay(pdMS_TO_TICKS(TASK_3_PERIOD));
 	}
 }
 
