@@ -14,6 +14,8 @@
 #define completed  	1
 #define overdue  	2
 
+extern xQueueHandle xTaskCreationQueue;
+extern xQueueHandle xTaskCompletionQueue;
 extern xQueueHandle xTaskListRequestQueue;
 extern xQueueHandle xActiveTaskListQueue;
 extern xQueueHandle xCompletedTaskListQueue;
@@ -37,12 +39,7 @@ typedef struct {
     struct dd_task_list *next_task;
 }dd_task_list;
 
-void release_dd_task( TaskHandle_t t_handle,
-task_type type,
-uint32_t task_id,
-uint32_t absolute_deadline,
-QueueHandle_t xTaskCreationQueue
-);
+void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, uint32_t absolute_deadline);
 
 void complete_dd_task(uint32_t task_id);
 

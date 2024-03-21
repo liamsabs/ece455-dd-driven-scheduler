@@ -192,6 +192,7 @@ static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
 
 //Queue to pass created user defined tasks between the DDS and other Tasks
 xQueueHandle xTaskCreationQueue = 0;
+xQueueHandle xTaskCompletionQueue = 0;
 
 // Queue to recieve list requests from the monitor task
 xQueueHandle xTaskListRequestQueue = 0;
@@ -245,8 +246,8 @@ int main(void)
 	
 	
 	/* Setup Queues */
-	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
-
+	xTaskCreationQueue = xQueueCreate(1, sizeof(dd_task*));
+	xTaskCompletionQueue = xQueueCreate(1, sizeof(uint32_t));
 	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
 	xActiveTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
 	xCompletedTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
