@@ -236,7 +236,12 @@ int main(void)
 	xTaskCreate( Green_LED_Controller_Task, "Green_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate( Amber_LED_Controller_Task, "Amber_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
-	
+
+
+	/*
+	TODO: add the xTaskCreate declarations for our tasks, and edit the priorities of the above
+	Important: DDS Task must be the highest priority, and Monitor Task should be the lowest, as it'll just run when nothing else is running
+	*/
 	
 	
 	/* Setup Queues */
