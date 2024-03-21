@@ -192,8 +192,13 @@ static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
 
 //Queue to pass created user defined tasks between the DDS and other Tasks
 xQueueHandle xTaskCreationQueue = 0;
-//Queue used to keep track of the 3 task lists
-xQueueHandle xTaskListQueue = 0;
+
+// Queue to recieve list requests from the monitor task
+xQueueHandle xTaskListRequestQueue = 0;
+//Queues used to keep track of the 3 task lists
+xQueueHandle xActiveTaskListQueue = 0;
+xQueueHandle xCompletedTaskListQueue = 0;
+xQueueHandle xOverdueTaskListQueue = 0;
 
 // Timer Handlers
 xTimerHandle xTaskGenTimerHandler = 0;
@@ -236,7 +241,11 @@ int main(void)
 	
 	/* Setup Queues */
 	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
-	xTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list));
+
+	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
+	xActiveTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
+	xCompletedTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
+	xOverdueTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
 
 	/*
 	Beginning of our tasks and timers
@@ -267,7 +276,8 @@ int main(void)
 /*-----------------------------------------------------------*/
 
 static void DDS_Task( void *pvParameters ){
-
+//Niaomi to-do: queue recieving and requests from task list
+//Will add this asap
 }
 
 /*-----------------------------------------------------------*/
