@@ -9,6 +9,7 @@
 #include "../FreeRTOS_Source/include/semphr.h"
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
+#include "stm32f4_discovery.h"
 #include "dd_tasks.h"
 
 #define TASK_1_PERIOD 2000
