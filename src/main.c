@@ -246,7 +246,7 @@ int main(void)
 	
 	
 	/* Setup Queues */
-	xTaskCreationQueue = xQueueCreate(1, sizeof(dd_task));
+	xTaskCreationQueue = xQueueCreate(1, sizeof(dd_task*));
 	xTaskCompletionQueue = xQueueCreate(1, sizeof(uint32_t));
 	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
 	xActiveTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
