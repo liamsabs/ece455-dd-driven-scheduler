@@ -276,7 +276,8 @@ int main(void)
 /*-----------------------------------------------------------*/
 
 static void DDS_Task( void *pvParameters ){
-
+//Niaomi to-do: queue recieving and requests from task list
+//Will add this asap
 }
 
 /*-----------------------------------------------------------*/
