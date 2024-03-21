@@ -192,8 +192,13 @@ static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
 
 //Queue to pass created user defined tasks between the DDS and other Tasks
 xQueueHandle xTaskCreationQueue = 0;
-//Queue used to keep track of the 3 task lists
-xQueueHandle xCompleteQueue = 0;
+
+// Queue to recieve list requests from the monitor task
+xQueueHandle xTaskListRequestQueue = 0;
+//Queues used to keep track of the 3 task lists
+xQueueHandle xActiveTaskListQueue = 0;
+xQueueHandle xCompletedTaskListQueue = 0;
+xQueueHandle xOverdueTaskListQueue = 0;
 
 // Timer Handlers
 xTimerHandle xTaskGenTimerHandler = 0;
@@ -231,12 +236,21 @@ int main(void)
 	xTaskCreate( Green_LED_Controller_Task, "Green_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate( Amber_LED_Controller_Task, "Amber_LED", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
-	
+
+
+	/*
+	TODO: add the xTaskCreate declarations for our tasks, and edit the priorities of the above
+	Important: DDS Task must be the highest priority, and Monitor Task should be the lowest, as it'll just run when nothing else is running
+	*/
 	
 	
 	/* Setup Queues */
 	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
-	xTaskIDQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint32_t));
+
+	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
+	xActiveTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
+	xCompletedTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
+	xOverdueTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
 
 	/*
 	Beginning of our tasks and timers
@@ -267,15 +281,33 @@ int main(void)
 /*-----------------------------------------------------------*/
 
 static void DDS_Task( void *pvParameters ){
-	dd_task_list *active_dd_task_list = NULL;
-	dd_task_list *completed_dd_task_list = NULL;
-	dd_task_list *overdue_dd_task_list = NULL;
+//Niaomi to-do: queue recieving and requests from task list
+//Will add this asap
 
-
+	// Not sure if everything should be in a while(1) loop?
 	while(1){
-	xTaskReceive(xTaskCreationQueue, )
+		uint16_t list_type;
 
+		//These lists will probably be different in the final implementation, is a placeholder for now
+		dd_task_list* active_list;
+		dd_task_list* completed_list;
+		dd_task_list* overdue_list;
+
+		/*
+		This checks if the get_xxx_task_list has sent a request, and what type of list they want
+		Then, it updates the appropriate queue and sends the requested list along.
+		*/
+		if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
+			if(list_type == active){
+				xQueueSend(xActiveTaskListQueue, &active_list, 100);
+			}else if(list_type == completed){
+				xQueueSend(xCompletedTaskListQueue, &completed_list, 100);
+			}else if(list_type == overdue){
+				xQueueSend(xOverdueTaskListQueue, &overdue_list, 100);
+			}
+		}
 	}
+	
 
 }
 
