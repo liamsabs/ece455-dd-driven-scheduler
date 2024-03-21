@@ -3,49 +3,64 @@
 
 void periodicTaskGenerator1 (void *pvParameters)
 {
+	TaskHandle_t xTaskHandle1; 
 	while(1)
 	{
-		vTaskDelay(TASK_1_PERIOD);
+		xTaskCreate(vPeriodicTask1, "PeriodicTask1", configMINIMAL_STACK_SIZE, NULL, (configMAX_PRIORITIES-4), &xTaskHandle1); //create task
+		vTaskSuspend(xTaskHandle1); // Suspend Task for DDS to handle
+		release_dd_task(xTaskHandle1, PERIODIC, 1, xTaskGetTickCount() + pdMS_TO_TICKS(TASK_1_PERIOD)); //release task to DDS
+		vTaskDelay(TASK_1_PERIOD); //block periodic task for task 1 period
 	}
 }
 
 void periodicTaskGenerator2 (void *pvParameters)
 {
+	TaskHandle_t xTaskHandle2;
 	while(1)
 	{
-		vTaskDelay(TASK_2_PERIOD);
+		xTaskCreate(vPeriodicTask2, "PeriodicTask2", configMINIMAL_STACK_SIZE, NULL, (configMAX_PRIORITIES-4), &xTaskHandle2); //create task
+		vTaskSuspend(xTaskHandle2); // Suspend Task for DDS to handle
+		release_dd_task(xTaskHandle2, PERIODIC, 2, xTaskGetTickCount() + pdMS_TO_TICKS(TASK_2_PERIOD)); //release task to DDS
+		vTaskDelay(TASK_2_PERIOD); //block periodic task for task 2 period
 	}
 }
 
 
 void periodicTaskGenerator3 (void *pvParamters)
 {
+	TaskHandle_t xTaskHandle3;
 	while(1)
 	{
-		vTaskDelay(TASK_3_PERIOD);
+		xTaskCreate(vPeriodicTask1, "PeriodicTask3", configMINIMAL_STACK_SIZE, NULL, (configMAX_PRIORITIES-4), &xTaskHandle3); //create task
+		vTaskSuspend(xTaskHandle3); // Suspend Task for DDS to handle
+		release_dd_task(xTaskHandle3, PERIODIC, 3, xTaskGetTickCount() + pdMS_TO_TICKS(TASK_3_PERIOD)); //release task to DDS
+		vTaskDelay(TASK_3_PERIOD); //block periodic task for task 3 period
 	}
 }
 
-void periodicTask1 (void *pvParameters)
+void vPeriodicTask1 (void *pvParameters)
 {
 	TickType_t currentTick = xTaskGetTickCount();
-	TickType_t finalTick = currentTick + (TASK_1_EXECUTION_TIME / portTICK_PERIOD_MS);
+	TickType_t finalTick = currentTick + pdMS_TO_TICKS(TASK_1_EXECUTION_TIME);
 	while (currentTick < finalTick)
 	    currentTick = xTaskGetTickCount();
+	complete_dd_task(1);
 }
 
-void periodicTask2 (void *pvParameters)
+void vPeriodicTask2 (void *pvParameters)
 {
 	TickType_t currentTick = xTaskGetTickCount();
-	TickType_t finalTick = currentTick + (TASK_2_EXECUTION_TIME / portTICK_PERIOD_MS);
+	TickType_t finalTick = currentTick + pdMS_TO_TICKS(TASK_2_EXECUTION_TIME);
 	while (currentTick < finalTick)
 		currentTick = xTaskGetTickCount();
+	complete_dd_task(2);
 }
 
-void periodicTask3 (void *pvParameters)
+void vPeriodicTask3 (void *pvParameters)
 {
 	TickType_t currentTick = xTaskGetTickCount();
-	TickType_t finalTick = currentTick + (TASK_3_EXECUTION_TIME / portTICK_PERIOD_MS);
+	TickType_t finalTick = currentTick + pdMS_TO_TICKS(TASK_3_EXECUTION_TIME);
 	while (currentTick < finalTick)
 		currentTick = xTaskGetTickCount();
+	complete_dd_task(3);
 }
