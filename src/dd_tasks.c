@@ -34,7 +34,7 @@ dd_task_list** get_complete_dd_task_list(void){
   dd_task_list* completed_list;
   xQueueSend(xTaskListRequestQueue, &list_type, 100);
 
-  while(!xQueueReceive(xActiveTaskListQueue, &completed_list, 100));
+  while(!xQueueReceive(xCompletedTaskListQueue, &completed_list, 100));
 
   return completed_list;
 
@@ -46,7 +46,7 @@ dd_task_list** get_overdue_dd_task_list(void){
   dd_task_list* overdue_list;
   xQueueSend(xTaskListRequestQueue, &list_type, 100);
 
-  while(!xQueueReceive(xActiveTaskListQueue, &overdue_list, 100));
+  while(!xQueueReceive(xOverdueTaskListQueue, &overdue_list, 100));
 
   return overdue_list;
 
