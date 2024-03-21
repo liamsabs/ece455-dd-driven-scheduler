@@ -10,6 +10,15 @@
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
+#define active  	0
+#define completed  	1
+#define overdue  	2
+
+extern xQueueHandle xTaskListRequestQueue;
+extern xQueueHandle xActiveTaskListQueue;
+extern xQueueHandle xCompletedTaskListQueue;
+extern xQueueHandle xOverdueTaskListQueue;
+
 // enum for state
 typedef enum {PERIODIC,APERIODIC} task_type;
 
