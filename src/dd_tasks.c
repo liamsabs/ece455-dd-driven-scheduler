@@ -9,7 +9,7 @@ void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, ui
 }
 
 void complete_dd_task(uint32_t task_id) {
-xQueueSend(xTaskCompletionQueue, task_id, 0); //send to xTaskCompletionQueue
+  xQueueSend(xTaskCompletionQueue, task_id, 0); //send to xTaskCompletionQueue
 }
 
 // Will need to confirm and check pointer locations to get this working
