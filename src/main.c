@@ -284,21 +284,31 @@ int main(void)
 static void DDS_Task( void *pvParameters ){
 //Niaomi to-do: queue recieving and requests from task list
 //Will add this asap
+	dd_task taskToSchedule; // contents of xTaskCreationQueue will be copied to this
+	xTaskHandle taskToRelease; // this handle will release the task with the soonest relative deadline
+	
+	dd_task_list* active_list_head;
+	dd_task_list* completed_list_head;
+	dd_task_list* overdue_list;
 
 	// Not sure if everything should be in a while(1) loop?
 	while(1){
 		uint16_t list_type;
 
-		//These lists will probably be different in the final implementation, is a placeholder for now
-		dd_task_list* active_list;
-		dd_task_list* completed_list;
-		dd_task_list* overdue_list;
+		
 
 		/*
 		This checks if the get_xxx_task_list has sent a request, and what type of list they want
 		Then, it updates the appropriate queue and sends the requested list along.
 		*/
-		if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
+		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
+			dd_task_list** taskToDispatch = NULL;
+			dd_task_list** currentNode = active_list_head;
+			insertAtEnd(&active_list, taskToSchedule);
+			for(dd)
+
+
+		}else if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
 			if(list_type == active){
 				xQueueSend(xActiveTaskListQueue, &active_list, 100);
 			}else if(list_type == completed){
