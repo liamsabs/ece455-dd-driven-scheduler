@@ -192,6 +192,7 @@ static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
 
 //Queue to pass created user defined tasks between the DDS and other Tasks
 xQueueHandle xTaskCreationQueue = 0;
+xQueueHandle xTaskExecutionQueue = 0;
 xQueueHandle xTaskCompletionQueue = 0;
 
 // Queue to recieve list requests from the monitor task
@@ -247,6 +248,7 @@ int main(void)
 	
 	/* Setup Queues */
 	xTaskCreationQueue = xQueueCreate(1, sizeof(dd_task*));
+	xTaskExecutionQueue = xQueueCreate(1, sizeof(dd_task*));
 	xTaskCompletionQueue = xQueueCreate(1, sizeof(uint32_t));
 	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
 	xActiveTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_list*));
@@ -282,8 +284,7 @@ int main(void)
 /*-----------------------------------------------------------*/
 
 static void DDS_Task( void *pvParameters ){
-//Niaomi to-do: queue recieving and requests from task list
-//Will add this asap
+
 
 	TimerHandle_t DDS_Timer = 
 				xTimerCreate("DDSTimer", 
@@ -302,7 +303,6 @@ static void DDS_Task( void *pvParameters ){
 
 	uint16_t list_type;
 
-	// Not sure if everything should be in a while(1) loop?
 	while(1){
 		
 
@@ -311,13 +311,16 @@ static void DDS_Task( void *pvParameters ){
 			dd_task_list** taskToDispatch = NULL;
 			dd_task_list** currentNode = active_list_head;
 			insertAtEnd(&active_list_head, taskToSchedule);
+			sortList(&active_list_head);
 			for(dd)
 
 
 		}else if(xQueueReceive(xTaskCompletionQueue, &taskToComplete, 100)){
 			dd_task_list** taskToComplete = NULL;
 			dd_task_list** currentNode = completed_list_head;
+			deleteTask(&active_list_head, taskToComplete);
 			insertAtEnd(&completed_list_head, taskToComplete);
+			sortList(&active_list_head);
 			for(dd)
 
 		
