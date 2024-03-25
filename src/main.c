@@ -186,7 +186,7 @@ static void Monitor_Task( void *pvParameters );
 xQueueHandle xQueue_handle = 0;
 
 
-
+static void vDDSTimerCallback ( xTimerHandle timerHandler );
 static void vTaskTimerCallback ( xTimerHandle timerHandler );
 static void vTaskGenTimerCallback ( xTimerHandle timerHandler );
 
@@ -269,7 +269,7 @@ int main(void)
 				xTimerCreate("TaskGenTimer",
 				pdMS_TO_TICKS(1000),
 				pdFALSE,
-				(void *) 0,
+				(void *) 1,
 				vTaskGenTimerCallback);
 
 
@@ -284,37 +284,54 @@ int main(void)
 static void DDS_Task( void *pvParameters ){
 //Niaomi to-do: queue recieving and requests from task list
 //Will add this asap
+
+	TimerHandle_t DDS_Timer = 
+				xTimerCreate("DDSTimer", 
+				pdMS_TO_TICKS(1000), 
+				pdFALSE, 
+				(void *) 0, 
+				vDDSTimerCallback);
+
 	dd_task taskToSchedule; // contents of xTaskCreationQueue will be copied to this
+	dd_task taskToComplete; // contents of xTaskCompletionQueue will be copied to this
 	xTaskHandle taskToRelease; // this handle will release the task with the soonest relative deadline
 	
 	dd_task_list* active_list_head;
 	dd_task_list* completed_list_head;
-	dd_task_list* overdue_list;
+	dd_task_list* overdue_list_head;
+
+	uint16_t list_type;
 
 	// Not sure if everything should be in a while(1) loop?
 	while(1){
-		uint16_t list_type;
-
 		
 
+		
+		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
+			dd_task_list** taskToDispatch = NULL;
+			dd_task_list** currentNode = active_list_head;
+			insertAtEnd(&active_list_head, taskToSchedule);
+			for(dd)
+
+
+		}else if(xQueueReceive(xTaskCompletionQueue, &taskToComplete, 100)){
+			dd_task_list** taskToComplete = NULL;
+			dd_task_list** currentNode = completed_list_head;
+			insertAtEnd(&completed_list_head, taskToComplete);
+			for(dd)
+
+		
+		}else if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
 		/*
 		This checks if the get_xxx_task_list has sent a request, and what type of list they want
 		Then, it updates the appropriate queue and sends the requested list along.
 		*/
-		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
-			dd_task_list** taskToDispatch = NULL;
-			dd_task_list** currentNode = active_list_head;
-			insertAtEnd(&active_list, taskToSchedule);
-			for(dd)
-
-
-		}else if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
 			if(list_type == active){
-				xQueueSend(xActiveTaskListQueue, &active_list, 100);
+				xQueueSend(xActiveTaskListQueue, &active_list_head, 100);
 			}else if(list_type == completed){
-				xQueueSend(xCompletedTaskListQueue, &completed_list, 100);
+				xQueueSend(xCompletedTaskListQueue, &completed_list_head, 100);
 			}else if(list_type == overdue){
-				xQueueSend(xOverdueTaskListQueue, &overdue_list, 100);
+				xQueueSend(xOverdueTaskListQueue, &overdue_list_head, 100);
 			}
 		}
 	}
@@ -324,24 +341,47 @@ static void DDS_Task( void *pvParameters ){
 
 /*-----------------------------------------------------------*/
 
-static void User_Defined_Task( void *pvParameters ){
-
-}
-
-/*-----------------------------------------------------------*/
-
 static void DD_Task_Generator_Task( void *pvParameters ){
-	uint32_t new_task_ID = 0;
-	//create_dd_task(TaskHandle_t t_handle, PERIODIC, new_task_ID, 1000);
+	
 }
 
 /*-----------------------------------------------------------*/
 
 static void Monitor_Task( void *pvParameters ){
 
+	/*
+	Lowest priority task, will run whenever there is a break in execution of other tasks and reports the number of active, completed and overdue tasks
+	*/
+
+	dd_task_list* active_list_head;
+	dd_task_list* completed_list_head;
+	dd_task_list* overdue_list_head;
+
+	unsigned int active_tasks;
+	unsigned int completed_tasks;
+	unsigned int overdue_tasks;
+
+	while(1){
+
+		active_list_head = get_active_dd_task_list();
+		active_tasks = countItems(active_list_head);
+
+		completed_list_head = get_complete_dd_task_list();
+		completed_tasks = countItems(completed_list_head);
+
+		overdue_list_head = get_overdue_dd_task_list();
+		overdue_tasks = countItems(overdue_list_head);
+
+	}
 }
 
 /*-----------------------------------------------------------*/
+
+static void vDDSTimerCallback ( xTimerHandle timerHandler ){
+	/*
+	When timer done, system should call Task Generator to create a new periodic task
+	*/
+}
 
 static void vTaskTimerCallback ( xTimerHandle timerHandler ){
 	/*
