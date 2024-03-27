@@ -34,10 +34,11 @@ typedef struct {
 } dd_task;
 
 // Define the structure for a node in the linked list
-typedef struct {
+// Define the structure for a node in the linked list
+typedef struct dd_task_list {
     dd_task task;
     struct dd_task_list *next_task;
-}dd_task_list;
+} dd_task_list;
 
 void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, uint32_t absolute_deadline);
 
@@ -54,8 +55,6 @@ uint32_t get_overdue_dd_task_list(void);
 // Function to create a new node with given task
 dd_task_list* createNode(dd_task newTask);
 
-// Function to insert a new node at the beginning of the linked list
-void insertAtBeginning(dd_task_list** head, dd_task newTask);
 
 // Function to insert a new node at the end of the linked list
 void insertAtEnd(dd_task_list** head, dd_task newTask);

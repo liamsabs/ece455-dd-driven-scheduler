@@ -80,11 +80,11 @@ int main(void)
 	vQueueAddToRegistry(xTaskCompletionQueue, "TaskCompletionQueue");
 
 	/* Create the Tasks */
-	//xTaskCreate(prvDDSTask, "DDS Task", configMINIMAL_STACK_SIZE, NULL, DDS_PRIORITY, NULL);
+	xTaskCreate(prvDDSTask, "DDS Task", configMINIMAL_STACK_SIZE, NULL, DDS_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator1, "Periodic Task Gen 1", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator2, "Periodic Task Gen 2", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator3, "Periodic Task Gen 3", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
-	//xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
+	xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -97,7 +97,6 @@ int main(void)
 static void prvDDSTask( void *pvParameters ){
 
 	dd_task taskToSchedule; // contents of xTaskCreationQueue will be copied to this
-	xTaskHandle taskToRelease; // this handle will release the task with the soonest relative deadline
 	uint32_t completedTaskID; // ID of completed task sent from periodic task 
 	dd_task completedTask; // completed dd_task from executing task queue
 	
@@ -115,16 +114,12 @@ static void prvDDSTask( void *pvParameters ){
 		/* for the creation of a task and adding to the active task list*/
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
 			
-<<<<<<< HEAD
+
 			dd_task_list* taskToDispatch = active_list_head; // used to store task with soonest deadline while iterating through list
 			dd_task_list* currentNode = active_list_head; // current Node of List to iterate through
-=======
-			dd_task_list** taskToDispatch = &active_list_head; // used to store task with soonest deadline while iterating through list
-			dd_task_list** currentNode = &active_list_head; // current Node of List to iterate through
 
 			taskToSchedule.release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
->>>>>>> 0a1e63b40af949d818bbddf2d1085c1157afbb3d
-			
+
 			insertAtEnd(&active_list_head, taskToSchedule); //insert the dd_task recieved from queue onto the list
 
 			while(currentNode != NULL){  // iterate through list
@@ -152,15 +147,15 @@ static void prvDDSTask( void *pvParameters ){
 
 			/*Determine which list to add the completed task to*/
 			if(completedTask.completion_time < completedTask.absolute_deadline){ // task met deadline
-				insertAtEnd(completed_list_head, completedTask); //insert at end of completed list
+				insertAtEnd(&completed_list_head, completedTask); //insert at end of completed list
 			}else{ // task did not meet deadline
-				insertAtEnd(overdue_list_head, completedTask); // insert at end of overdue list
+				insertAtEnd(&overdue_list_head, completedTask); // insert at end of overdue list
 			}
 
 		}else if(xQueueReceive(xTaskListRequestQueue, &listrequest, 100)){ // request for task lists by monitor task
 			active_list_count = countItems(active_list_head); // count items in active list
 			completed_list_count = countItems(completed_list_head); // count items in completed list
-			overdue_list_head = countItems(overdue_list_head); // count items in overdue list
+			overdue_list_count = countItems(overdue_list_head); // count items in overdue list
 			xQueueSend(xActiveTaskListQueue, &active_list_count, 0); // send active count
 			xQueueSend(xCompletedTaskListQueue, &completed_list_count, 0); // send completed count
 			xQueueSend(xOverdueTaskListQueue, &overdue_list_count, 0); // send overdue count
@@ -178,27 +173,13 @@ static void prvMonitorTask( void *pvParameters ){
 	uint32_t overdue_tasks;
 
 	while(1){
-		xQueueSend(xTaskListRequestQueue, monitorDDSRequest, 0);
+		xQueueSend(xTaskListRequestQueue, &monitorDDSRequest, 0);
         active_tasks = get_active_dd_task_list();
 		completed_tasks = get_complete_dd_task_list();
 		overdue_tasks = get_overdue_dd_task_list();
-		printf("Active: %d Completed: %d Overdue: %d", active_tasks, completed_tasks, overdue_tasks);
+		printf("Active: %u Completed: %u Overdue: %u", (unsigned int)active_tasks, (unsigned int)completed_tasks, (unsigned int)overdue_tasks);
 		vTaskDelay(MONITOR_TASK_PERIOD);
 	}
-}
-
-/*-----------------------------------------------------------*/
-
-static void vTaskTimerCallback ( xTimerHandle timerHandler ){
-	/*
-	When timer done, system should call Task Generator to create a new periodic task
-	*/
-}
-
-static void vTaskGenTimerCallback ( xTimerHandle timerHandler ){
-	/*
-	When timer done, system should call Task Generator to create a new periodic task
-	*/
 }
 
 /*-----------------------------------------------------------*/

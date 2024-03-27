@@ -11,13 +11,6 @@ dd_task_list* createNode(dd_task newTask) {
     return newNode;
 }
 
-// Function to insert a new node at the beginning of the linked list
-void insertAtBeginning(dd_task_list** head, dd_task newTask) {
-    dd_task_list* newNode = createNode(newTask);
-    newNode->next_task = *head;
-    *head = newNode;
-}
-
 // Function to insert a new node at the end of the linked list
 void insertAtEnd(dd_task_list** head, dd_task newTask) {
     dd_task_list* newNode = createNode(newTask);
@@ -39,7 +32,7 @@ void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
 
     if (*headRef == *nodeToDeleteRef) {
         *headRef = (*headRef)->next_task;
-        free(*nodeToDeleteRef);
+        //pvPortFree(*nodeToDeleteRef);
         *nodeToDeleteRef = NULL;
         return;
     }
@@ -52,7 +45,7 @@ void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
     }
 
     current->next_task = (*nodeToDeleteRef)->next_task;
-    free(*nodeToDeleteRef);
+    //pvPortFree(*nodeToDeleteRef);
     *nodeToDeleteRef = NULL;
 }
 

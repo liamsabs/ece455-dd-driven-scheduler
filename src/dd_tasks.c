@@ -5,7 +5,7 @@ void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, ui
     dd_task *new_task = (dd_task *)pvPortMalloc(sizeof(dd_task)); //allocate memory for new released task
     *new_task = (dd_task){ .t_handle = t_handle, .type = type, .task_id = task_id, .absolute_deadline = absolute_deadline }; // instantiate new_task
     xQueueSend(xTaskCreationQueue, new_task, 0); //send new task to DDS
-    //vPortFree(new_task);
+    vPortFree(new_task);
 }
 
 void complete_dd_task(uint32_t task_id) {
