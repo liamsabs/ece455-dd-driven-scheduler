@@ -61,7 +61,7 @@ void insertAtBeginning(dd_task_list** head, dd_task newTask);
 void insertAtEnd(dd_task_list** head, dd_task newTask);
 
 // Delete Task From List
-void deleteTask(struct dd_task_list** headRef, struct dd_task_list** nodeToDeleteRef);
+void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef);
 
 // Count number of nodes in list
 uint32_t countItems(dd_task_list* head);
