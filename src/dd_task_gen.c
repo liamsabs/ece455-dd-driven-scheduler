@@ -42,10 +42,10 @@ void vPeriodicTask1 (void *pvParameters)
 {
 	TickType_t currentTick = xTaskGetTickCount(); // get current tick value
 	TickType_t finalTick = currentTick + pdMS_TO_TICKS(TASK_1_EXECUTION_TIME); // get final tick value after execution time
-	STM_EVAL_LEDOn(LED3); // turn on amber LED
+	STM_EVAL_LEDOn(LED4); // turn on green LED
 	while (currentTick < finalTick) // loop while current tick value < final tick value
 	    currentTick = xTaskGetTickCount(); // update current tick value
-	STM_EVAL_LEDOff(LED3); // turn off amber LED 
+	STM_EVAL_LEDOff(LED4); // turn off green LED 
 	complete_dd_task(1); // complete the task with ID 1
 }
 

@@ -32,22 +32,30 @@ void insertAtEnd(dd_task_list** head, dd_task newTask) {
     temp->next_task = newNode;
 }
 
-
-// Really not sure how to make this work, pointers are iffy for me
-void deleteTask(dd_task_list** head, dd_task Task){
-    if (*head == NULL) {
+// Function to Delete Node from task given a pointer to the node
+void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
+    if (*headRef == NULL || *nodeToDeleteRef == NULL)
         return;
-    }
-    
-    if ((*head)->task.task_id == Task.task_id){
-        dd_task_list* del_node = *head;
-        *head = (*head)->next_task;
-        freeList(&(del_node));
+
+    if (*headRef == *nodeToDeleteRef) {
+        *headRef = (*headRef)->next_task;
+        free(*nodeToDeleteRef);
+        *nodeToDeleteRef = NULL;
         return;
     }
 
-    deleteTask(&(*head)->next_task, Task);
+    dd_task_list* current = *headRef;
+    while (current->next_task != *nodeToDeleteRef) {
+        current = current->next_task;
+        if (current == NULL)
+            return;
+    }
+
+    current->next_task = (*nodeToDeleteRef)->next_task;
+    free(*nodeToDeleteRef);
+    *nodeToDeleteRef = NULL;
 }
+
 
 // Function to swap two list nodes, for use in the sorting algorithm
 dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2){
