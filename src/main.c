@@ -115,8 +115,15 @@ static void prvDDSTask( void *pvParameters ){
 		/* for the creation of a task and adding to the active task list*/
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
 			
+<<<<<<< HEAD
 			dd_task_list* taskToDispatch = active_list_head; // used to store task with soonest deadline while iterating through list
 			dd_task_list* currentNode = active_list_head; // current Node of List to iterate through
+=======
+			dd_task_list** taskToDispatch = &active_list_head; // used to store task with soonest deadline while iterating through list
+			dd_task_list** currentNode = &active_list_head; // current Node of List to iterate through
+
+			taskToSchedule.release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
+>>>>>>> 0a1e63b40af949d818bbddf2d1085c1157afbb3d
 			
 			insertAtEnd(&active_list_head, taskToSchedule); //insert the dd_task recieved from queue onto the list
 
@@ -172,13 +179,11 @@ static void prvMonitorTask( void *pvParameters ){
 
 	while(1){
 		xQueueSend(xTaskListRequestQueue, monitorDDSRequest, 0);
-		//^ Unnecessary?
         active_tasks = get_active_dd_task_list();
 		completed_tasks = get_complete_dd_task_list();
 		overdue_tasks = get_overdue_dd_task_list();
 		printf("Active: %d Completed: %d Overdue: %d", active_tasks, completed_tasks, overdue_tasks);
 		vTaskDelay(MONITOR_TASK_PERIOD);
-		//Monitor task period undefined; also does this need to be periodic if it's just meant to run whenever everything else is not?
 	}
 }
 
