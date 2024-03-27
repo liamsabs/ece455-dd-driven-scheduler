@@ -31,7 +31,7 @@ void periodicTaskGenerator3 (void *pvParamters)
 	TaskHandle_t xTaskHandle3;
 	while(1)
 	{
-		xTaskCreate(vPeriodicTask1, "PeriodicTask3", configMINIMAL_STACK_SIZE, NULL, IDLE_TASK_PRIORITY, &xTaskHandle3); // create task
+		xTaskCreate(vPeriodicTask3, "PeriodicTask3", configMINIMAL_STACK_SIZE, NULL, IDLE_TASK_PRIORITY, &xTaskHandle3); // create task
 		vTaskSuspend(xTaskHandle3); // Suspend Task for DDS to handle
 		release_dd_task(xTaskHandle3, PERIODIC, 3, xTaskGetTickCount() + pdMS_TO_TICKS(TASK_3_PERIOD)); // release task to DDS
 		vTaskDelay(pdMS_TO_TICKS(TASK_3_PERIOD)); // block periodic task for task 3 period
