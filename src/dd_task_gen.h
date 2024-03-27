@@ -19,6 +19,7 @@
 #define TASK_1_EXECUTION_TIME 85
 #define TASK_2_EXECUTION_TIME 95
 #define TASK_3_EXECUTION_TIME 120
+#define IDLE_TASK_PRIORITY (configMAX_PRIORITIES - 4) 
 
 /* Dispatches PeriodicTask1 */
 void periodicTaskGenerator1 (void *pvParameters);

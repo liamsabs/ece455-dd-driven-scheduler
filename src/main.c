@@ -16,6 +16,15 @@
 #define mainQUEUE_LENGTH 1
 
 
+/*-----------------------------------------------------------*/
+
+#define DDS_PRIORITY configMAX_PRIORITIES
+#define ACTIVE_TASK_PRIORITY (configMAX_PRIORITIES - 1)
+#define MONITOR_TASK_PRIORITY (configMAX_PRIORITIES - 2)
+#define IDLE_TASK_PRIORITY (configMAX_PRIORITIES - 4) 
+
+/*-----------------------------------------------------------*/
+
 static void prvSetupHardware( void );
 static void DDS_Task( void *pvParameters );
 static void Monitor_Task( void *pvParameters );
@@ -81,11 +90,12 @@ static void DDS_Task( void *pvParameters ){
 	dd_task taskToSchedule; // contents of xTaskCreationQueue will be copied to this
 	xTaskHandle taskToRelease; // this handle will release the task with the soonest relative deadline
 	uint32_t completedTaskID; // ID of completed task sent from periodic task 
-	dd_task completedTask; // ID of completed task 
+	dd_task completedTask; // ID of completed task
+	TickType_t currentTime;
 	
 	dd_task_list* active_list_head;
 	dd_task_list* completed_list_head;
-	dd_task_list* overdue_list;
+	dd_task_list* overdue_list_head;
 
 	// Not sure if everything should be in a while(1) loop?
 	while(1){
@@ -119,8 +129,13 @@ static void DDS_Task( void *pvParameters ){
 		}else if(xQueueReceive(xTaskCompletionQueue, &completedTaskID, 100)){ /* For once a scheduled task completes */
 			
 			xQueueReceive(xTaskExecutionQueue, &completedTask, 100); // recieve from the executing task queue
-		
-		
+			completedTask.completion_time = xTaskGetTickCount(); 
+
+			if(completedTask.completion_time < completedTask.absolute_deadline){ // task met deadline
+				insertAtEnd(completed_list_head, completedTask);
+			}else{ // task did not meet deadline
+				insertAtEnd(overdue_list_head, completedTask);
+			}
 		}else if(xQueueReceive(xTaskListRequestQueue, &list_type, 100)){
 			if(list_type == active){
 				xQueueSend(xActiveTaskListQueue, &active_list, 100);
