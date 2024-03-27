@@ -56,46 +56,9 @@ void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
     *nodeToDeleteRef = NULL;
 }
 
-
-// Function to swap two list nodes, for use in the sorting algorithm
-dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2){
-    dd_task_list* temp_list = ptr2->next_task;
-    ptr2->next_task = ptr1;
-    ptr1->next_task = temp_list;
-    return ptr2;
-}
-
-// Function to sort list members by deadline, using a bubble sort algorithm
-void sortList(dd_task_list** head){
-    dd_task_list** other_head;
-
-    unsigned int i, j, swapped;
-
-    unsigned int count = countItems(*head);
-
-    for(i = 0; i <= count; i++){
-        other_head = head;
-        swapped = 0;
-
-        for(j = 0; j < count - i - 1; j++){
-            dd_task_list* p1 = *other_head;
-            dd_task_list* p2 = p1->next_task;
-
-            if(p1->task.absolute_deadline > p2->task.absolute_deadline){
-                *other_head = swap(p1, p2);
-                swapped = 1;
-            }
-
-            other_head = &(*other_head)->next_task;
-        }
-
-        if(swapped == 0) break;
-    }
-}
-
 // Implementation of the countItems function
-unsigned int countItems(dd_task_list* head) {
-    unsigned int count = 0;
+uint32_t countItems(dd_task_list* head) {
+    uint32_t count = 0;
     dd_task_list* current = head;
 
     while (current != NULL) {

@@ -63,14 +63,8 @@ void insertAtEnd(dd_task_list** head, dd_task newTask);
 // Delete Task From List
 void deleteTask(struct dd_task_list** headRef, struct dd_task_list** nodeToDeleteRef);
 
-// Function to swap two list nodes, for use in the sorting algorithm
-dd_task_list* swap(dd_task_list* ptr1, dd_task_list* ptr2);
-
-// Function to sort list members by deadline, using a bubble sort algorithm
-void sortList(dd_task_list** head);
-
 // Count number of nodes in list
-unsigned int countItems(dd_task_list* head);
+uint32_t countItems(dd_task_list* head);
 
 // Function to print the elements of the linked list
 void printList(dd_task_list* head);
