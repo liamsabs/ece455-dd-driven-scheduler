@@ -80,11 +80,11 @@ int main(void)
 	vQueueAddToRegistry(xTaskCompletionQueue, "TaskCompletionQueue");
 
 	/* Create the Tasks */
-	xTaskCreate(prvDDSTask, "DDS Task", configMINIMAL_STACK_SIZE, NULL, DDS_PRIORITY, NULL);
+	//xTaskCreate(prvDDSTask, "DDS Task", configMINIMAL_STACK_SIZE, NULL, DDS_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator1, "Periodic Task Gen 1", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator2, "Periodic Task Gen 2", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator3, "Periodic Task Gen 3", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
-	xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
+	//xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -101,9 +101,9 @@ static void prvDDSTask( void *pvParameters ){
 	uint32_t completedTaskID; // ID of completed task sent from periodic task 
 	dd_task completedTask; // completed dd_task from executing task queue
 	
-	dd_task_list* active_list_head; // head of linked list for tasks to be scheduled
-	dd_task_list* completed_list_head; // head of linked list for tasks that have been completed
-	dd_task_list* overdue_list_head; // head of linked list for tasks that finished completing late
+	dd_task_list* active_list_head = NULL; // head of linked list for tasks to be scheduled
+	dd_task_list* completed_list_head = NULL; // head of linked list for tasks that have been completed
+	dd_task_list* overdue_list_head = NULL; // head of linked list for tasks that finished completing late
 
 	uint16_t listrequest; // recieved to indicate the monitor is requesting list counts
 	uint32_t active_list_count; // active list count sent to monitor
@@ -115,23 +115,24 @@ static void prvDDSTask( void *pvParameters ){
 		/* for the creation of a task and adding to the active task list*/
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
 			
-			dd_task_list** taskToDispatch = &active_list_head; // used to store task with soonest deadline while iterating through list
-			dd_task_list** currentNode = &active_list_head; // current Node of List to iterate through
+			dd_task_list* taskToDispatch = active_list_head; // used to store task with soonest deadline while iterating through list
+			dd_task_list* currentNode = active_list_head; // current Node of List to iterate through
 
 			taskToSchedule.release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
+
 			
 			insertAtEnd(&active_list_head, taskToSchedule); //insert the dd_task recieved from queue onto the list
 
 			while(currentNode != NULL){  // iterate through list
-				if((*currentNode)->task.absolute_deadline < (*taskToDispatch)->task.absolute_deadline){ // if item in list has sooner deadline than current
+				if(currentNode->task.absolute_deadline < taskToDispatch->task.absolute_deadline){ // if item in list has sooner deadline than current
 					taskToDispatch = currentNode; //update taskToDispatch to current Node 
 				}
-				currentNode = (*currentNode)->next_task; // continue iterating though
+				currentNode = currentNode->next_task; // continue iterating though
 			}
 
-			dd_task ddTaskToDispatch = (*taskToDispatch)->task; // get dd_task to dispatch to add to execution queue and to delete from list
+			dd_task ddTaskToDispatch = taskToDispatch->task; // get dd_task to dispatch to add to execution queue and to delete from list
 
-			deleteTask(active_list_head, taskToDispatch); // Delete the task from the active task list
+			deleteTask(&active_list_head, &taskToDispatch); // Delete the task from the active task list
 
 			xQueueSend(xTaskExecutionQueue, &ddTaskToDispatch, 0); // add the task to the task executing queue
 

@@ -5,11 +5,11 @@ void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, ui
     dd_task *new_task = (dd_task *)pvPortMalloc(sizeof(dd_task)); //allocate memory for new released task
     *new_task = (dd_task){ .t_handle = t_handle, .type = type, .task_id = task_id, .absolute_deadline = absolute_deadline }; // instantiate new_task
     xQueueSend(xTaskCreationQueue, new_task, 0); //send new task to DDS
-    vportfree(new_task);
+    //vPortFree(new_task);
 }
 
 void complete_dd_task(uint32_t task_id) {
-  xQueueSend(xTaskCompletionQueue, task_id, 0); //send to xTaskCompletionQueue
+  xQueueSend(xTaskCompletionQueue, &task_id, 0); //send to xTaskCompletionQueue
 }
 
 // Will need to confirm and check pointer locations to get this working

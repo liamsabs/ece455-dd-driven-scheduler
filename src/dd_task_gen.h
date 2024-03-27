@@ -31,12 +31,12 @@ void periodicTaskGenerator2 (void *pvParameters);
 void periodicTaskGenerator3 (void *pvParamters);
 
 /* 1st Periodic Task to be scheduled */
-void periodicTask1 (void *pvParameters);
+void vPeriodicTask1 (void *pvParameters);
 
 /* 2nd Periodic Task to be scheduled */
-void periodicTask2 (void *pvParameters);
+void vPeriodicTask2 (void *pvParameters);
 
 /* 3rd Periodic Task to be scheduled */
-void periodicTask3 (void *pvParameters);
+void vPeriodicTask3 (void *pvParameters);
 
 #endif
