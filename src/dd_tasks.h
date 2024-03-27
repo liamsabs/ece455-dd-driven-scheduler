@@ -43,11 +43,11 @@ void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, ui
 
 void complete_dd_task(uint32_t task_id);
 
-dd_task_list** get_active_dd_task_list(void);
+uint32_t get_active_dd_task_list(void);
 
-dd_task_list** get_complete_dd_task_list(void);
+uint32_t get_complete_dd_task_list(void);
 
-dd_task_list** get_overdue_dd_task_list(void);
+uint32_t get_overdue_dd_task_list(void);
 
 // Linked List Functions
 

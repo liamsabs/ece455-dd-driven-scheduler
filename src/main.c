@@ -75,7 +75,7 @@ int main(void)
 	xOverdueTaskListQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint32_t));
 
 	/* Register Queues */
-	QueueAddToRegistry(xTaskCreationQueue, "TaskCreationQueue");
+	vQueueAddToRegistry(xTaskCreationQueue, "TaskCreationQueue");
 	vQueueAddToRegistry(xTaskExecutionQueue, "TaskExecutionQueue");
 	vQueueAddToRegistry(xTaskCompletionQueue, "TaskCompletionQueue");
 
@@ -172,11 +172,13 @@ static void prvMonitorTask( void *pvParameters ){
 
 	while(1){
 		xQueueSend(xTaskListRequestQueue, monitorDDSRequest, 0);
+		//^ Unnecessary?
         active_tasks = get_active_dd_task_list();
 		completed_tasks = get_complete_dd_task_list();
 		overdue_tasks = get_overdue_dd_task_list();
 		printf("Active: %d Completed: %d Overdue: %d", active_tasks, completed_tasks, overdue_tasks);
 		vTaskDelay(MONITOR_TASK_PERIOD);
+		//Monitor task period undefined; also does this need to be periodic if it's just meant to run whenever everything else is not?
 	}
 }
 
