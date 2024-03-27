@@ -110,7 +110,6 @@ static void prvDDSTask( void *pvParameters ){
 	uint32_t completed_list_count; // completed list count sent to monitor
 	uint32_t overdue_list_count; // overdue list count sent to monitor
 
-	// Not sure if everything should be in a while(1) loop?
 	while(1){
 		
 		/* for the creation of a task and adding to the active task list*/
