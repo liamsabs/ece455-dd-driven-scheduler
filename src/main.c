@@ -19,7 +19,7 @@
 /*-----------------------------------------------------------*/
 
 #define DDS_PRIORITY (configMAX_PRIORITIES)
-#define PERIODIC_TASK_GEN_PRIORITY (configMAX_PRIORITIES - 1)
+#define PERIODIC_TASK_GEN_PRIORITY (configMAX_PRIORITIES - 2)
 #define ACTIVE_TASK_PRIORITY (configMAX_PRIORITIES - 2)
 #define MONITOR_TASK_PRIORITY (configMAX_PRIORITIES - 3)
 
@@ -66,7 +66,7 @@ int main(void)
 	
 	
 	/* Setup Queues */
-	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task*));
+	xTaskCreationQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task *));
 	xTaskExecutionQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task));
 	xTaskCompletionQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint32_t));
 	xTaskListRequestQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof( uint16_t ));
@@ -96,7 +96,7 @@ int main(void)
 
 static void prvDDSTask( void *pvParameters ){
 
-	dd_task taskToSchedule; // contents of xTaskCreationQueue will be copied to this
+	dd_task* taskToSchedule; // contents of xTaskCreationQueue will be copied to this
 	uint32_t completedTaskID; // ID of completed task sent from periodic task 
 	dd_task completedTask; // completed dd_task from executing task queue
 	
@@ -115,12 +115,11 @@ static void prvDDSTask( void *pvParameters ){
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
 			
 
+			taskToSchedule->release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
+			insertAtEnd(&active_list_head, *taskToSchedule); //insert the dd_task recieved from queue onto the list
+			vPortFree(taskToSchedule);
 			dd_task_list* taskToDispatch = active_list_head; // used to store task with soonest deadline while iterating through list
 			dd_task_list* currentNode = active_list_head; // current Node of List to iterate through
-
-			taskToSchedule.release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
-
-			insertAtEnd(&active_list_head, taskToSchedule); //insert the dd_task recieved from queue onto the list
 
 			while(currentNode != NULL){  // iterate through list
 				if(currentNode->task.absolute_deadline < taskToDispatch->task.absolute_deadline){ // if item in list has sooner deadline than current
@@ -133,10 +132,9 @@ static void prvDDSTask( void *pvParameters ){
 
 			deleteTask(&active_list_head, &taskToDispatch); // Delete the task from the active task list
 
-			xQueueSend(xTaskExecutionQueue, &ddTaskToDispatch, 0); // add the task to the task executing queue
-
 			if (ddTaskToDispatch.t_handle != NULL) { // check to make sure task handle is valid then dispatch
 				vTaskPrioritySet(ddTaskToDispatch.t_handle, (configMAX_PRIORITIES - 1)); // set the task priority to high
+				xQueueSend(xTaskExecutionQueue, &ddTaskToDispatch, 0); // add the task to the task executing queue
 				vTaskResume(ddTaskToDispatch.t_handle); // resume the task with the soonest deadline
 			}
 

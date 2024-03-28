@@ -2,10 +2,10 @@
 #include <stdint.h>
 
 void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, uint32_t absolute_deadline ) {
-    dd_task *new_task = (dd_task *)pvPortMalloc(sizeof(dd_task)); //allocate memory for new released task
-    *new_task = (dd_task){ .t_handle = t_handle, .type = type, .task_id = task_id, .absolute_deadline = absolute_deadline }; // instantiate new_task
-    xQueueSend(xTaskCreationQueue, new_task, 0); //send new task to DDS
-    vPortFree(new_task);
+
+	dd_task *new_task = (dd_task *)pvPortMalloc(sizeof(dd_task)); // allocate memory for new released task
+	*new_task = (dd_task){ .t_handle = t_handle, .type = type, .task_id = task_id, .absolute_deadline = absolute_deadline }; // instantiate new_task
+	xQueueSend(xTaskCreationQueue, &new_task, 0); // send new task to DDS
 }
 
 void complete_dd_task(uint32_t task_id) {

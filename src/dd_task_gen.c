@@ -47,6 +47,7 @@ void vPeriodicTask1 (void *pvParameters)
 	    currentTick = xTaskGetTickCount(); // update current tick value
 	STM_EVAL_LEDOff(LED4); // turn off green LED 
 	complete_dd_task(1); // complete the task with ID 1
+	vTaskDelete(NULL);
 }
 
 void vPeriodicTask2 (void *pvParameters)
@@ -58,6 +59,7 @@ void vPeriodicTask2 (void *pvParameters)
 		currentTick = xTaskGetTickCount(); // update current tick value
 	STM_EVAL_LEDOff(LED5); // turn off red LED
 	complete_dd_task(2); // complete the task
+	vTaskDelete(NULL);
 }
 
 void vPeriodicTask3 (void *pvParameters)
@@ -67,6 +69,7 @@ void vPeriodicTask3 (void *pvParameters)
 	STM_EVAL_LEDOn(LED6); // turn on blue LED
 	while (currentTick < finalTick) // loop while current tick value < final tick value
 		currentTick = xTaskGetTickCount(); // update current tick value
-	STM_EVAL_LEDOn(LED6); // turn off blue LED
+	STM_EVAL_LEDOff(LED6); // turn off blue LED
 	complete_dd_task(3); // complete the task
+	vTaskDelete(NULL);
 }

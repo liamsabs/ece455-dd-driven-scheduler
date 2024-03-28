@@ -32,7 +32,7 @@ void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
 
     if (*headRef == *nodeToDeleteRef) {
         *headRef = (*headRef)->next_task;
-        //pvPortFree(*nodeToDeleteRef);
+        vPortFree(*nodeToDeleteRef);
         *nodeToDeleteRef = NULL;
         return;
     }
@@ -45,7 +45,7 @@ void deleteTask(dd_task_list** headRef, dd_task_list** nodeToDeleteRef) {
     }
 
     current->next_task = (*nodeToDeleteRef)->next_task;
-    //pvPortFree(*nodeToDeleteRef);
+    vPortFree(*nodeToDeleteRef);
     *nodeToDeleteRef = NULL;
 }
 
