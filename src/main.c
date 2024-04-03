@@ -25,7 +25,7 @@
 
 /*-----------------------------------------------------------*/
 
-#define MONITOR_TASK_PERIOD (pdMS_TO_TICKS(200))
+#define MONITOR_TASK_PERIOD (pdMS_TO_TICKS(500))
 
 /*-----------------------------------------------------------*/
 
@@ -84,7 +84,7 @@ int main(void)
 	xTaskCreate(periodicTaskGenerator1, "Periodic Task Gen 1", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator2, "Periodic Task Gen 2", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator3, "Periodic Task Gen 3", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
-	//xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
+	xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -114,8 +114,6 @@ static void prvDDSTask( void *pvParameters ){
 		
 		/* for the creation of a task and adding to the active task list*/
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
-			
-			printf("Creating New Task\n");
 			taskToSchedule->release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
 			insertAtEnd(&active_list_head, *taskToSchedule); //insert the dd_task recieved from queue onto the list
 			vPortFree(taskToSchedule);
@@ -143,7 +141,6 @@ static void prvDDSTask( void *pvParameters ){
 			}
 
 		}else if(xQueueReceive(xTaskCompletionQueue, &completedTaskID, 100)){ /* For once a scheduled task completes */
-			printf("Completing Task\n");
 			xQueueReceive(xTaskExecutionQueue, &completedTask, 100); // recieve from the executing task queue
 			completedTask.completion_time = xTaskGetTickCount(); // record completion time of the task
 
@@ -155,7 +152,6 @@ static void prvDDSTask( void *pvParameters ){
 			}
 
 		}else if(xQueueReceive(xTaskListRequestQueue, &listrequest, 100)){ // request for task lists by monitor task
-			printf("Monitor Task Request");
 			active_list_count = countItems(active_list_head); // count items in active list
 			completed_list_count = countItems(completed_list_head); // count items in completed list
 			overdue_list_count = countItems(overdue_list_head); // count items in overdue list
@@ -180,7 +176,7 @@ static void prvMonitorTask( void *pvParameters ){
         active_tasks = get_active_dd_task_list();
 		completed_tasks = get_complete_dd_task_list();
 		overdue_tasks = get_overdue_dd_task_list();
-		printf("Active: %u Completed: %u Overdue: %u", (unsigned int)active_tasks, (unsigned int)completed_tasks, (unsigned int)overdue_tasks);
+		printf("Active: %u Completed: %u Overdue: %u\n", (unsigned int)active_tasks, (unsigned int)completed_tasks, (unsigned int)overdue_tasks);
 		vTaskDelay(MONITOR_TASK_PERIOD);
 	}
 }
