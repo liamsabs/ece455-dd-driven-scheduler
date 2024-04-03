@@ -84,7 +84,7 @@ int main(void)
 	xTaskCreate(periodicTaskGenerator1, "Periodic Task Gen 1", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator2, "Periodic Task Gen 2", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
 	xTaskCreate(periodicTaskGenerator3, "Periodic Task Gen 3", configMINIMAL_STACK_SIZE, NULL, PERIODIC_TASK_GEN_PRIORITY, NULL);
-	xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
+	//xTaskCreate(prvMonitorTask, "Monitor Task", configMINIMAL_STACK_SIZE, NULL, MONITOR_TASK_PRIORITY, NULL);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -99,6 +99,7 @@ static void prvDDSTask( void *pvParameters ){
 	dd_task* taskToSchedule; // contents of xTaskCreationQueue will be copied to this
 	uint32_t completedTaskID; // ID of completed task sent from periodic task 
 	dd_task completedTask; // completed dd_task from executing task queue
+	dd_task ddTaskToDispatch;
 	
 	dd_task_list* active_list_head = NULL; // head of linked list for tasks to be scheduled
 	dd_task_list* completed_list_head = NULL; // head of linked list for tasks that have been completed
@@ -114,7 +115,7 @@ static void prvDDSTask( void *pvParameters ){
 		/* for the creation of a task and adding to the active task list*/
 		if(xQueueReceive(xTaskCreationQueue, &taskToSchedule, 100)){
 			
-
+			printf("Creating New Task\n");
 			taskToSchedule->release_time = xTaskGetTickCount(); // Assign a release time to the task we recieved
 			insertAtEnd(&active_list_head, *taskToSchedule); //insert the dd_task recieved from queue onto the list
 			vPortFree(taskToSchedule);
@@ -128,9 +129,12 @@ static void prvDDSTask( void *pvParameters ){
 				currentNode = currentNode->next_task; // continue iterating though
 			}
 
-			dd_task ddTaskToDispatch = taskToDispatch->task; // get dd_task to dispatch to add to execution queue and to delete from list
+			ddTaskToDispatch = taskToDispatch->task; // get dd_task to dispatch to add to execution queue and to delete from list
 
 			deleteTask(&active_list_head, &taskToDispatch); // Delete the task from the active task list
+
+			vPortFree(taskToDispatch);
+			vPortFree(currentNode);
 
 			if (ddTaskToDispatch.t_handle != NULL) { // check to make sure task handle is valid then dispatch
 				vTaskPrioritySet(ddTaskToDispatch.t_handle, (configMAX_PRIORITIES - 1)); // set the task priority to high
@@ -139,7 +143,7 @@ static void prvDDSTask( void *pvParameters ){
 			}
 
 		}else if(xQueueReceive(xTaskCompletionQueue, &completedTaskID, 100)){ /* For once a scheduled task completes */
-			
+			printf("Completing Task\n");
 			xQueueReceive(xTaskExecutionQueue, &completedTask, 100); // recieve from the executing task queue
 			completedTask.completion_time = xTaskGetTickCount(); // record completion time of the task
 
@@ -151,6 +155,7 @@ static void prvDDSTask( void *pvParameters ){
 			}
 
 		}else if(xQueueReceive(xTaskListRequestQueue, &listrequest, 100)){ // request for task lists by monitor task
+			printf("Monitor Task Request");
 			active_list_count = countItems(active_list_head); // count items in active list
 			completed_list_count = countItems(completed_list_head); // count items in completed list
 			overdue_list_count = countItems(overdue_list_head); // count items in overdue list
