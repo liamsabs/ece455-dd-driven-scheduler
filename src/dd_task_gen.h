@@ -12,13 +12,13 @@
 #include "stm32f4_discovery.h"
 #include "dd_tasks.h"
 
-#define TASK_1_PERIOD 2000
-#define TASK_2_PERIOD 2000
-#define TASK_3_PERIOD 2000
+#define TASK_1_PERIOD 500
+#define TASK_2_PERIOD 500
+#define TASK_3_PERIOD 750
 
-#define TASK_1_EXECUTION_TIME 85
-#define TASK_2_EXECUTION_TIME 95
-#define TASK_3_EXECUTION_TIME 120
+#define TASK_1_EXECUTION_TIME 95
+#define TASK_2_EXECUTION_TIME 150
+#define TASK_3_EXECUTION_TIME 250
 #define IDLE_TASK_PRIORITY (configMAX_PRIORITIES - 4) 
 
 /* Dispatches PeriodicTask1 */
