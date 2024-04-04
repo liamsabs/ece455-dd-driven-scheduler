@@ -20,12 +20,12 @@
 
 #define DDS_PRIORITY (configMAX_PRIORITIES)
 #define PERIODIC_TASK_GEN_PRIORITY (configMAX_PRIORITIES - 2)
-#define ACTIVE_TASK_PRIORITY (configMAX_PRIORITIES - 2)
+#define ACTIVE_TASK_PRIORITY (configMAX_PRIORITIES - 1)
 #define MONITOR_TASK_PRIORITY (configMAX_PRIORITIES - 3)
 
 /*-----------------------------------------------------------*/
 
-#define MONITOR_TASK_PERIOD (pdMS_TO_TICKS(500))
+#define MONITOR_TASK_PERIOD (pdMS_TO_TICKS(1500))
 
 /*-----------------------------------------------------------*/
 
@@ -176,7 +176,9 @@ static void prvMonitorTask( void *pvParameters ){
         active_tasks = get_active_dd_task_list();
 		completed_tasks = get_complete_dd_task_list();
 		overdue_tasks = get_overdue_dd_task_list();
+		if(active_tasks != 0 || completed_tasks != 0 || overdue_tasks != 0){
 		printf("Active: %u Completed: %u Overdue: %u\n", (unsigned int)active_tasks, (unsigned int)completed_tasks, (unsigned int)overdue_tasks);
+		}
 		vTaskDelay(MONITOR_TASK_PERIOD);
 	}
 }

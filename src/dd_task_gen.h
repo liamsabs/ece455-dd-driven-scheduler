@@ -12,7 +12,7 @@
 #include "stm32f4_discovery.h"
 #include "dd_tasks.h"
 
-#define TASK_1_PERIOD 500
+#define TASK_1_PERIOD 250
 #define TASK_2_PERIOD 500
 #define TASK_3_PERIOD 750
 
